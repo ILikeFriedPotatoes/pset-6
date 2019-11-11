@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.Scanner;
 
 public class ATM {
     
@@ -7,12 +8,25 @@ public class ATM {
     private BankAccount activeAccount;
     private Bank bank;
     
-    ////////////////////////////////////////////////////////////////////////////
-    //                                                                        //
-    // Refer to the Simple ATM tutorial to fill in the details of this class. //
-    // You'll need to implement the new features yourself.                    //
-    //                                                                        //
-    ////////////////////////////////////////////////////////////////////////////
+    public void startup() {
+    	System.out.println("Welcome to the AIT ATM!");
+    	
+    	System.out.print("Account No.: ");
+    	long accountNo = in.nextLong();
+    	
+    	System.out.print("PIN        : ");
+    	int pin = in.nextInt();
+    	
+    	if (accountNo == activeAccount.getAccount() && pin ==activeAccount.getPin()) {
+    		System.out.println("[1] View Balance");
+    		System.out.println("[2] Deposit Money");
+    		System.out.println("[3] Withdraw Money");
+    		
+    	} else {
+    		System.out.println("\nInvalid account number and/or PIN.\n")
+    		
+    	}
+    }
     
     /**
      * Constructs a new instance of the ATM class.
@@ -34,5 +48,7 @@ public class ATM {
     
     public static void main(String[] args) {
         ATM atm = new ATM();
+        
+        atm.startup();
     }
 }
