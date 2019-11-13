@@ -1,14 +1,19 @@
-public class BankAccount {
-        
-    private final int pin;
-    private final long accountNo;
+import java.text.NumberFormat;
+
+public class  BankAccount{
+     
+	private static long prevAccountNo = 100000000L;
+	
+	// var int and accountNo are assigned placeholdre values
+    private int pin;
+    private long accountNo;
     private double balance;
-    private final User accountHolder;
+    private User accountHolder;
     
-    public BankAccout(int pin, long accountNo, double balance, User accountHolder) {
+    public BankAccount(int pin, long accountNo, double balance, User accountHolder) {
     	this.pin = pin;
     	this.accountNo = accountNo;
-    	this.balance = balance;
+    	this.balance = 	balance;
     	this.accountHolder = accountHolder;
     }
     
@@ -20,20 +25,34 @@ public class BankAccount {
     	return accountNo;
     }
     
-    public double getBalance() {
-    	return balance;
+    public String getBalance() {
+        NumberFormat currency = NumberFormat.getCurrencyInstance();
+        return currency.format(balance);
     }
     
-    public User accountHolder(){
+    public User getAccountHolder(){
     	return accountHolder;
     }
     
-    public void deposit(double amount) {
-    	balance += amount;
+    public int deposit(double amount) {
+    	if (amount <= 0) {
+    		return ATM.INVALID;
+    	} else {
+    		balance += amount;
+    	}
+    	
+    	return ATM.SUCCESS;
     }
     
-    public void withdraw(double amount) {
-    	balance -= amount;
+    public int withdraw(double amount) {
+    	if (amount <= 0) {
+    		return ATM.INVALID;
+    	} else if (amount > balance) {
+    		return ATM.INSUFFICIENT;
+    	} else {
+    		balance -= amount;
+    	}
+    	return ATM.SUCCESS;
     }
     
     /*
@@ -47,17 +66,17 @@ public class BankAccount {
     }
     
     /*
-     * Converts this BankAccount object to a string of text in preparation to
+     * Converts this  object to a string of text in preparation to
      * be written to the data file.
      * 
      * @return a string of text formatted for the data file
      */
-    
+    /*
     @Override
     public String toString() {
         return String.valueOf(accountNo) +
             String.valueOf(pin) +
             accountHolder.serialize() +
             formatBalance();
-    }
+    } */
 }

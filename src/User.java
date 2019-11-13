@@ -5,7 +5,7 @@ public class User {
     
     public User(String firstName, String lastName) {
     	this.firstName = firstName;
-    	this.lastName lastName;
+    	this.lastName = lastName;
     }
     
     public String getFirstName() {
@@ -22,9 +22,9 @@ public class User {
      * @return a fixed-width string in line with the data file specifications.
      */
     
-    public String serialize() {
+    /*public String serialize() {
         return String.format("%1$-" + ATM.FIRST_NAME_WIDTH + "s", firstName) +
             String.format("%1$-" + ATM.LAST_NAME_WIDTH + "s", lastName);
-    }
+    }*/
 }
 
