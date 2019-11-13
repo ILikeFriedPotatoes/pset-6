@@ -43,7 +43,7 @@ public class ATM {
     			
     			activeAccount.deposit(depositAmt);
     		case 3:
-    			System.out.print("\nEneter amount: ");
+    			System.out.print("\nEnter amount: ");
     			double withdrawAmt = in.nextDouble();
     			
     			activeAccount.withdraw(withdrawAmt);
