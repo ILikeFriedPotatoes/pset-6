@@ -31,6 +31,8 @@ public class ATM {
     		System.out.println("[1] View Balance");
     		System.out.println("[2] Deposit Money");
     		System.out.println("[3] Withdraw Money");
+    		System.out.println("[4] Transfer Money");
+    		System.out.println("[5] Logout");
     		
     		int selection = in.nextInt();
     		switch (selection) { 
