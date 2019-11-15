@@ -4,7 +4,7 @@ public class  BankAccount{
      
 	private static long prevAccountNo = 100000000L;
 	
-	// var int and accountNo are assigned placeholdre values
+	// var pin and accountNo are assigned placeholder values
     private int pin;
     private long accountNo;
     private double balance;
