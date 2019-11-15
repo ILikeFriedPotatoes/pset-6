@@ -20,13 +20,15 @@ public class ATM {
     
     public void startup() {
     	System.out.println("Welcome to the AIT ATM!");
-    	
-    	System.out.print("Account No.: ");
-    	long accountNo = in.nextLong();
-    	
-    	System.out.print("PIN        : ");
-    	int pin = in.nextInt();
-    	
+    	do {
+ 
+    		System.out.print("Account No.: ");
+        	long accountNo = in.nextLong();
+        	
+        	System.out.print("PIN        : ");
+        	int pin = in.nextInt();
+        	
+    	} while(accountNo == activeAccount.getAccountNo() && pin == activeAccount.getPin());
     	if (accountNo == activeAccount.getAccountNo() && pin == activeAccount.getPin()) {
     		System.out.println("[1] View Balance");
     		System.out.println("[2] Deposit Money");
