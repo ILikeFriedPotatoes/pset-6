@@ -122,8 +122,12 @@ public class ATM {
     	System.out.print("\nEnter amount: ");
     	double amount = in.nextDouble();
     	
-    	activeAccount.deposit(amount);
-    	System.out.println();
+    	int status = activeAccount.deposit(amount);
+    	if (status == ATM.INVALID) {
+    		System.out.println("\nDeposit rejected. Amount must be greater than $0.00.\n");
+    	} else if (status == ATM.SUCCESS) {
+    		System.out.println("\nDeposit accepted.\n");
+    	}
     }
     
     public void withdraw() {
