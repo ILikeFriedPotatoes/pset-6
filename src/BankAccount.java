@@ -4,7 +4,6 @@ public class  BankAccount{
      
 	private static long prevAccountNo = 100000000L;
 	
-	// var pin and accountNo are assigned placeholder values
     private int pin;
     private long accountNo;
     private double balance;
@@ -12,8 +11,8 @@ public class  BankAccount{
     
     public BankAccount(int pin, long accountNo, double balance, User accountHolder) {
     	this.pin = pin;
-    	this.accountNo = accountNo;
-    	this.balance = 	balance;
+    	this.accountNo = ++BankAccount.prevAccountNo;
+    	this.balance = 	0.0;
     	this.accountHolder = accountHolder;
     }
     
@@ -71,12 +70,12 @@ public class  BankAccount{
      * 
      * @return a string of text formatted for the data file
      */
-    /*
+    
     @Override
     public String toString() {
         return String.valueOf(accountNo) +
             String.valueOf(pin) +
             accountHolder.serialize() +
             formatBalance();
-    } */
+    } 
 }

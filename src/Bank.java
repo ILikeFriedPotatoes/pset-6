@@ -10,11 +10,11 @@ import java.util.List;
 
 public class Bank {
 	
-	/*
-	 * Accounts are read from a fixed-width file. Each account is represented
-	 * as a single line of text. These start and end indexes help to parse the
-	 *line of text into individual account fields.
-	 */
+    /*
+     * Accounts are read from a fixed-width file. Each account is represented
+     * as a single line of text. These start and end indexes help to parse the
+     * line of text into individual account fields.
+     */
     
     private final static int ACCT_START = 0;
     private final static int ACCT_END = 9;
@@ -26,9 +26,9 @@ public class Bank {
     private final static int LAST_NAME_END = 63;
     private final static int BALANCE_START = 63;
     
-    private final static String DATA = "data/accounts.dat";		// data file path
+    private final static String DATA = "data/accounts.dat";    // data file path
     
-    private List<BankAccount> accounts;							// an in-memory list of BankAccount objects
+    private List<BankAccount> accounts;                        // an in-memory list of BankAccount objects
     
     /**
      * Constructs a new instance of the Bank class.
@@ -40,7 +40,7 @@ public class Bank {
         accounts = init();
         
         if (accounts == null) {
-        	throw new IOException();
+            throw new IOException();
         }
     }
     
@@ -53,7 +53,7 @@ public class Bank {
      */
     
     public BankAccount createAccount(int pin, User user) {
-    	//accounts.add(new BankAccount(pin, generateAccountNo(), user));
+    	accounts.add(new BankAccount(pin, generateAccountNo(), 0, user));
     	
     	return accounts.get(accounts.size() - 1);
     }
