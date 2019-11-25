@@ -53,8 +53,7 @@ public class Bank {
      */
     
     public BankAccount createAccount(int pin, User user) {
-    	accounts.add(new BankAccount(pin, generateAccountNo(), 0, user));
-    	
+    	accounts.add(new BankAccount(pin, generateAccountNo(), user));
     	return accounts.get(accounts.size() - 1);
     }
     
@@ -69,7 +68,7 @@ public class Bank {
     public BankAccount login(long accountNo, int pin) {
         BankAccount bankAccount = getAccount(accountNo);
         
-        if (bankAccount.getPin() == pin) {
+        if (bankAccount != null && bankAccount.getPin() == pin) {
             return bankAccount;
         } else {
             return null;

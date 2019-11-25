@@ -16,8 +16,6 @@ public class ATM {
     
     public ATM() {
         in = new Scanner(System.in);
-        
-        activeAccount = new BankAccount(1234, 1234, 0, new User("Ryan", "Wilson"));
         username = new User("Ryan", "Wilson");
         try {
 			this.bank = new Bank();
@@ -39,16 +37,18 @@ public class ATM {
     
     public void startup() {
     	System.out.println("Welcome to the AIT ATM!");
-    	String accountNo;
+    	long accountNo = 0;
     	
     	while (true) {
     		System.out.print("\nAccount No.  : ");
-        	accountNo = in.nextLine();
+        	String accountNumber = in.nextLine();
         	int pin;
         	
         	//Creates a new account
-        	if(accountNo.equals("+")) {
-        		newAccount(firstName, lastName));
+        	if(accountNumber.equals("+")) {
+        		createAccount();
+        	} else if(isNumber(accountNumber)) {
+        		Long.parseLong(accountNumber);
         	}
         	
         	System.out.print("PIN          : ");
@@ -56,7 +56,7 @@ public class ATM {
         	in.nextLine();
         	
         	if (isValidLogin(accountNo, pin)) {
-        		System.out.println("\nHello, again, " + username.getFirstName() + "!");
+        		System.out.println("\nHello, again, " + getFirstName() + "!");
         		
     			boolean validLogin = true;
     			while (validLogin) {
@@ -87,7 +87,7 @@ public class ATM {
     				}
     			}
         	} else { 
-	        	if(Integer.parseInt(accountNo) == -1 && pin == -1) {
+	        	if(accountNo == -1 && pin == -1) {
 	        		shutdown();
 	        	} else {
 	        		System.out.println("\nInvalid account number and/or PIN.\n");
@@ -97,24 +97,41 @@ public class ATM {
     	}
     	
     }
-    
-    public boolean isValidLogin(String accountNumber, int pin) {
-    	return Integer.parseInt(accountNumber) == activeAccount.getAccountNo() && pin == activeAccount.getPin();
+   
+    public boolean isValidLogin(long accountNo, int pin) {
+        return accountNo == activeAccount.getAccountNo() && pin == activeAccount.getPin();
     }
     
-    public void newAccount(String firstName, String lastName) {
+    public String getFirstName() {
+    	return username.getFirstName();
+    }
+    
+    public String getLastName() {
+    	return username.getLastName();
+    }
+    
+    public BankAccount createAccount() {
     	System.out.print("\nFirst Name: ");
 		String firstName = in.nextLine();
+		
 		System.out.print("\nLast Name: ");
-		String this.lastName = in.nextLine();
-		username = new User(firstName, lastName);
+		String lastName = in.nextLine();
+		
 		int pin;
 		do {
     		System.out.print("\nPIN: ");
 			pin = in.nextInt();
     		in.nextLine();
 		} while(pin < 1000 || pin > 9999);
-		Bank.createAccount(pin, username);
+		
+		BankAccount newAccount = bank.createAccount(pin, new User(firstName, lastName));
+		bank.update(newAccount);
+		bank.save();
+		
+		System.out.println("\nThank you! Your account number is: " + newAccount.getAccountNo());
+		System.out.println("You may now login to your new account.\n");
+		
+		return newAccount;
     }
     
     public int getSelection() {
@@ -129,6 +146,15 @@ public class ATM {
     
     public void showBalance() {
     	System.out.println("\nCurrenct balance: " + activeAccount.getBalance());
+    }
+    
+    private boolean isNumber(String str) {
+    	try {
+    		Long.parseLong(str);
+    		return true;
+    	} catch(Exception E) {
+    		return false;
+    	}
     }
     
     public void deposit() {
