@@ -37,67 +37,74 @@ public class ATM {
     
     public void startup() {
     	System.out.println("Welcome to the AIT ATM!");
-    	long accountNo = 0;
     	
-    	while (true) {
-    		System.out.print("\nAccount No.  : ");
-        	String accountNumber = in.nextLine();
-        	int pin;
-        	
-        	//Creates a new account
-        	if(accountNumber.equals("+")) {
-        		createAccount();
-        	} else if(isNumber(accountNumber)) {
-        		Long.parseLong(accountNumber);
+    	enterAccountNumber();
+    	
+    	int pin;
+    	System.out.print("PIN          : ");
+    	pin = in.nextInt();
+    	in.nextLine();
+    	
+    	if (isValidLogin(accountNo, pin)) {
+    		System.out.println("\nHello, again, " + getFirstName() + "!");
+    		
+			boolean validLogin = true;
+			while (validLogin) {
+				switch (getSelection()) { 
+					case 1:
+						in.nextLine();
+			    		showBalance();
+			    		break;
+					case 2:
+						in.nextLine();
+						deposit();
+						break;
+					case 3:
+						in.nextLine();
+						withdraw();
+						break;
+					case 4:
+						in.nextLine();
+						validLogin = false;
+						break;
+					case 5:
+						in.nextLine();
+						break;
+					default: 
+						in.nextLine();
+						System.out.println("\nInvalid selection.\n");
+						break;
+				}
+			}
+    	} else { 
+        	if(accountNo == -1 && pin == -1) {
+        		shutdown();
+        	} else {
+        		System.out.println("\nInvalid account number and/or PIN.\n");
         	}
-        	
-        	System.out.print("PIN          : ");
-        	pin = in.nextInt();
-        	in.nextLine();
-        	
-        	if (isValidLogin(accountNo, pin)) {
-        		System.out.println("\nHello, again, " + getFirstName() + "!");
-        		
-    			boolean validLogin = true;
-    			while (validLogin) {
-    				switch (getSelection()) { 
-    					case 1:
-    						in.nextLine();
-    			    		showBalance();
-    			    		break;
-    					case 2:
-    						in.nextLine();
-    						deposit();
-    						break;
-    					case 3:
-    						in.nextLine();
-    						withdraw();
-    						break;
-    					case 4:
-    						in.nextLine();
-    						validLogin = false;
-    						break;
-    					case 5:
-    						in.nextLine();
-    						break;
-    					default: 
-    						in.nextLine();
-    						System.out.println("\nInvalid selection.\n");
-    						break;
-    				}
-    			}
-        	} else { 
-	        	if(accountNo == -1 && pin == -1) {
-	        		shutdown();
-	        	} else {
-	        		System.out.println("\nInvalid account number and/or PIN.\n");
-	        	}
-        	}
-        	
     	}
-    	
     }
    
+    private long enterAccountNumber() {
+    	long accountNo = 0;
+    	System.out.print("\nAccount No.  : ");
+    	String accountNumber = in.nextLine();
+    	if(accountNumber.equals("+")) {
+    		createAccount();
+    		startup();
+    	} else if (accountNumber.equals(""))  {
+    		System.out.println("\nYour input was invalid. Please try again.");
+    		startup();
+    	} else if(isNumber(accountNumber)) {
+    		accountNo = Long.parseLong(accountNumber);
+    	} else {
+    		System.out.println("\nYour input was invalid. Please try again.");
+    		startup();
+    	}
+    	
+    	return accountNo;
+    }
+    
     public boolean isValidLogin(long accountNo, int pin) {
         return accountNo == activeAccount.getAccountNo() && pin == activeAccount.getPin();
     }
