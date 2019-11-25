@@ -38,53 +38,46 @@ public class ATM {
     public void startup() {
     	System.out.println("Welcome to the AIT ATM!");
     	
-    	enterAccountNumber();
+    	long accountNo = enterAccountNumber();
+    	int pin = enterPin();
     	
-    	int pin;
-    	System.out.print("PIN          : ");
-    	pin = in.nextInt();
-    	in.nextLine();
-    	
-    	if (isValidLogin(accountNo, pin)) {
-    		System.out.println("\nHello, again, " + getFirstName() + "!");
-    		
-			boolean validLogin = true;
-			while (validLogin) {
-				switch (getSelection()) { 
-					case 1:
-						in.nextLine();
-			    		showBalance();
-			    		break;
-					case 2:
-						in.nextLine();
-						deposit();
-						break;
-					case 3:
-						in.nextLine();
-						withdraw();
-						break;
-					case 4:
-						in.nextLine();
-						validLogin = false;
-						break;
-					case 5:
-						in.nextLine();
-						break;
-					default: 
-						in.nextLine();
-						System.out.println("\nInvalid selection.\n");
-						break;
-				}
+		activeAccount = bank.login(accountNo, pin);
+		System.out.println("\nHello, again, " + getFirstName() + "!");
+		
+		boolean validLogin = true;
+		while (validLogin) {
+			switch (getSelection()) { 
+				case 1:
+					in.nextLine();
+		    		showBalance();
+		    		break;
+				case 2:
+					in.nextLine();
+					deposit();
+					break;
+				case 3:
+					in.nextLine();
+					withdraw();
+					break;
+				case 4:
+					in.nextLine();
+					validLogin = false;
+					break;
+				case 5:
+					in.nextLine();
+					break;
+				default: 
+					in.nextLine();
+					System.out.println("\nInvalid selection.\n");
+					break;
 			}
-    	} else { 
-        	if(accountNo == -1 && pin == -1) {
-        		shutdown();
-        	} else {
-        		System.out.println("\nInvalid account number and/or PIN.\n");
-        	}
-    	}
+		}
     }
    
+    /*
+     * Methods for user entering account and pin information
+     */
+    
     private long enterAccountNumber() {
     	long accountNo = 0;
     	System.out.print("\nAccount No.  : ");
@@ -103,6 +96,19 @@ public class ATM {
     	}
     	
     	return accountNo;
+    }
+    
+    private int enterPin() {
+    	int pin = 0;
+    	try {
+	    	System.out.print("PIN          : ");
+	    	pin = in.nextInt();
+	    	in.nextLine();
+    	} catch(Exception e) {
+    		System.out.println("\nYour input was invalid. Please try again.");
+    		startup();
+    	}
+    	return pin;
     }
     
     public boolean isValidLogin(long accountNo, int pin) {
