@@ -9,6 +9,8 @@ public class ATM {
     private BankAccount activeAccount;
     //I'll keep this for now, but eclipse says this variable is useless. private User username;
     private Bank bank;
+    private long accountNo;
+    private int pin;
     
     //Private variables for selection
     private static final int VIEW = 1;
@@ -18,9 +20,9 @@ public class ATM {
     private static final int LOGOUT = 5;
 
     //Static variables for withdraw()
-    private static final int INVALID = 0;
-    private static final int INSUFFICIENT = 1;
-    private static final int SUCCESS = 2;
+    public static final int INVALID = 0;
+    public static final int INSUFFICIENT = 1;
+    public static final int SUCCESS = 2;
 
     /**
      * Constructs a new instance of the ATM class.
@@ -40,9 +42,9 @@ public class ATM {
     public void startup() {
     	System.out.println("Welcome to the AIT ATM!");
 
-    	long accountNo = enterAccountNumber();
-    	int pin = enterPin();
-    	enterAccountInformation(accountNo, pin);
+    	this.accountNo = enterAccountNumber();
+    	this.pin = enterPin();
+    	enterAccountInformation(this.accountNo, this.pin);
 		/*
     	try {
 			activeAccount = bank.login(accountNo, pin);
@@ -76,9 +78,11 @@ public class ATM {
      * Methods for user entering account and pin information
      */
 
-    private void enterAccountInformation(long accountNo, int pin) {
+    private void enterAccountInformation() {
     	try {
-			activeAccount = bank.login(accountNo, pin);
+    		this.pin = enterPin();
+    		this.accountNo = enterAccountNumber();
+			activeAccount = bank.login(this.accountNo, this.pin);
 			System.out.println("\nHello, again, " + activeAccount.getAccountHolder().getFirstName() + "!");
 			boolean validLogin = true;
 			while (validLogin) {
@@ -100,7 +104,7 @@ public class ATM {
 			}
 		} catch(Exception e) {
 			System.out.println("\nInvalid account number and/or PIN.\n");
-			enterAccountInformation(accountNo, pin);
+			enterAccountInformation();
 		}
     }
     
