@@ -44,7 +44,7 @@ public class ATM {
 
     	this.accountNo = enterAccountNumber();
     	this.pin = enterPin();
-    	enterAccountInformation(this.accountNo, this.pin);
+    	enterAccountInformation();
 		/*
     	try {
 			activeAccount = bank.login(accountNo, pin);
@@ -108,6 +108,7 @@ public class ATM {
 		}
     }
     
+    //This needs to be edited. Differentiate between the instance account number and local variable
     private long enterAccountNumber() {
     	long accountNo = 0;
     	System.out.print("\nAccount No.  : ");
