@@ -42,36 +42,33 @@ public class ATM {
     public void startup() {
     	System.out.println("Welcome to the AIT ATM!");
 
-    	this.accountNo = enterAccountNumber();
-    	this.pin = enterPin();
     	enterAccountInformation();
-		/*
-    	try {
-			activeAccount = bank.login(accountNo, pin);
-			System.out.println("\nHello, again, " + activeAccount.getAccountHolder().getFirstName() + "!");
-			boolean validLogin = true;
-			while (validLogin) {
-				switch (getSelection()) {
-					case VIEW:
-			    		showBalance(); break;
-					case DEPOSIT:
-						deposit(); break;
-					case WITHDRAW:
-						withdraw(); break;
-					case TRANSFER:
-						transfer(); break;
-					case LOGOUT:
-						validLogin = false; break;
-					default:
-						in.nextLine();
-						System.out.println("\nInvalid selection.\n"); break;
-				}
-			}
-		} catch(Exception e) {
-			System.out.println("\nInvalid account number and/or PIN.");
-			//enterAccountInformation()
-		}
-		*/
+        System.out.println("\nHello, again, " + this.activeAccount.getAccountHolder().getFirstName() + "!");
+        selectOption();
+    }
+    
+    /*
+     *  Method for selecting the show bank account, deposit, withdraw, or logout.
+     */
+    
+    private void selectOption() {
+    	 boolean validLogin = true;
+         while (validLogin) {
+             switch (getSelection()) {
+                 case VIEW:
+                     showBalance(); break;
+                 case DEPOSIT:
+                     deposit(); break;
+                 case WITHDRAW:
+                     withdraw(); break;
+                 case TRANSFER:
+                     transfer(); break;
+                 case LOGOUT:
+                     enterAccountInformation(); break;
+                 default:
+                     System.out.println("\nInvalid selection.\n"); break;
+             }
+         }
     }
 
     /*
@@ -80,50 +77,33 @@ public class ATM {
 
     private void enterAccountInformation() {
     	try {
-    		this.pin = enterPin();
     		this.accountNo = enterAccountNumber();
-			activeAccount = bank.login(this.accountNo, this.pin);
-			System.out.println("\nHello, again, " + activeAccount.getAccountHolder().getFirstName() + "!");
-			boolean validLogin = true;
-			while (validLogin) {
-				switch (getSelection()) {
-					case VIEW:
-			    		showBalance(); break;
-					case DEPOSIT:
-						deposit(); break;
-					case WITHDRAW:
-						withdraw(); break;
-					case TRANSFER:
-						transfer(); break;
-					case LOGOUT:
-						validLogin = false; break;
-					default:
-						in.nextLine();
-						System.out.println("\nInvalid selection.\n"); break;
-				}
-			}
+    		System.out.println(accountNo);
+    		this.pin = enterPin();
+    		if(this.pin == -1 && this.accountNo == -1) {
+    			shutdown();
+    		}
+			this.activeAccount = this.bank.login(this.accountNo, this.pin);
 		} catch(Exception e) {
 			System.out.println("\nInvalid account number and/or PIN.\n");
 			enterAccountInformation();
 		}
     }
 
-    //This needs to be edited. Differentiate between the instance account number and local variable
     private long enterAccountNumber() {
     	long accountNo = 0;
     	System.out.print("\nAccount No.  : ");
     	String accountNumber = in.nextLine();
     	if(accountNumber.equals("+")) {
     		createAccount();
-    		startup();
     	} else if (accountNumber.equals(""))  {
     		System.out.println("\nYour input was invalid. Please try again.");
-    		startup();
+    		enterAccountNumber();
     	} else if(isNumber(accountNumber)) {
     		accountNo = Long.parseLong(accountNumber);
     	} else {
     		System.out.println("\nYour input was invalid. Please try again.");
-    		startup();
+    		enterAccountNumber();
     	}
 
     	return accountNo;
@@ -132,9 +112,14 @@ public class ATM {
     private int enterPin() {
         int pin = 0;
         try {
-            System.out.print("PIN          : ");
-            pin = in.nextInt();
-            in.nextLine();
+        	do {
+	            System.out.print("PIN          : ");
+	            pin = in.nextInt();
+	            in.nextLine();
+	            if(pin == -1 && this.accountNo == -1) {
+	            	shutdown();
+	            }
+        	} while (pin < 1000 || pin > 9999);
         } catch(Exception e) {
             System.out.println("\nYour input was invalid. Please try again.");
             startup();
@@ -162,11 +147,15 @@ public class ATM {
     	int status = activeAccount.deposit(amount);
     	if (status == ATM.INVALID) {
     		System.out.println("\nDeposit rejected. Amount must be greater than $0.00.\n");
+    		selectOption();
     	} else if (status == ATM.SUCCESS) {
     		System.out.println("\n" + activeAccount);
-    		bank.update(activeAccount);
-    		bank.save();
+    		this.bank.update(activeAccount);
+    		this.bank.save();
     		System.out.println("\nDeposit accepted.");
+    	} else if (amount > (999999999999.99 - activeAccount.getNumBalance())) {
+    		System.out.println("\nDeposit rejected. Amount would cause balance to exceed $999,999,999,999.99.");
+    		selectOption();
     	}
     }
 
@@ -177,8 +166,8 @@ public class ATM {
     		amount = in.nextDouble();
     	} catch (Exception e) {
     		System.out.println("");
-    		bank.update(activeAccount);
-    		bank.save();
+    		this.bank.update(activeAccount);
+    		this.bank.save();
     		System.out.println("\nWithdrawal accpeted");
     	}
 
@@ -189,8 +178,8 @@ public class ATM {
             System.out.println("\nWithdrawal rejected. Insufficient funds.\n");
         } else if (status == ATM.SUCCESS) {
         	System.out.println(activeAccount);
-        	bank.update(activeAccount);
-        	bank.save();
+        	this.bank.update(activeAccount);
+        	this.bank.save();
             System.out.println("\nWithdrawal accepted.\n");
         }
     }
@@ -201,26 +190,49 @@ public class ATM {
 
         do {
             System.out.println("Enter account: ");
-            accountNo = in.nextLong();
+            try {
+            	accountNo = in.nextLong();
+            } catch(Exception e) {
+            	System.out.println("\nTransfer rejected. Destination not found");
+        		selectOption();
+            }
         } while(accountNo < 100000000 || accountNo > 999999999);
 
         do {
             System.out.println("Enter an ammount: ");
             amount = in.nextDouble();
-        }while(amount < 0 || amount > activeAccount.getNumBalance());
-
+        } while(amount < 0 || amount > activeAccount.getNumBalance());
+        if (amount < 0) {
+        	System.out.println("\nTransfer rejected. Amount must be greater than $0.00.");
+    		selectOption();
+        } else if (amount > (999999999999.99 - bank.getAccount(accountNo).getNumBalance())) {
+        	System.out.println("\nTransfer rejected. Amount would cause destination balance to exceed $999,999,999,999.99.");
+        	selectOption();
+        } else if (amount > activeAccount.getNumBalance()) {
+        	System.out.println("\nTransfer rejected. Insufficient funds.");
+        	selectOption();
+        }
         transferalDeposit(accountNo, amount);
         transferalWithdrawal(activeAccount.getAccountNo(), amount);
+        
     }
 
-    private void transferalDeposit(long accountNo, double amount) {
-    	BankAccount accountDestination = bank.getAccount(accountNo);
-    	accountDestination.deposit(amount);
-    	bank.update(accountDestination);
-    	bank.save();
+    public void transferalDeposit(long accountNo, double amount) {
+    	BankAccount accountDestination;
+    	try {
+    		accountDestination = bank.getAccount(accountNo);
+        	accountDestination.deposit(amount);
+        	bank.update(accountDestination);
+        	bank.save();
+    	} catch (Exception e) {
+    		System.out.println("\nTransfer rejected. Destination not found");
+    		this.accountNo = 0;
+    		selectOption();
+    	}
     }
+    
 
-    private void transferalWithdrawal(long usedAccount, double amount) {
+    public void transferalWithdrawal(long usedAccount, double amount) {
     	activeAccount.withdraw(amount);
     	bank.update(activeAccount);
     	bank.save();
@@ -231,11 +243,17 @@ public class ATM {
     */
 
     private BankAccount createAccount() {
-    	System.out.print("\nFirst Name: ");
-		String firstName = in.nextLine();
-
-		System.out.print("\nLast Name: ");
-		String lastName = in.nextLine();
+    	String firstName = "";
+    	do {
+    		System.out.print("\nFirst Name: ");
+    		firstName = in.nextLine();
+    	} while(firstName.length() < 1 || firstName.length() > FIRST_NAME_WIDTH);
+		
+    	String lastName = "";
+    	do {
+	    	System.out.print("\nLast Name: ");
+			lastName = in.nextLine();
+    	} while (lastName.length() < 1 || lastName.length() > LAST_NAME_WIDTH);
 
 		int pin;
 		do {
@@ -282,6 +300,9 @@ public class ATM {
             System.out.println("[5] Logout\n");
             choice = in.nextInt();
             in.nextLine();
+            if(choice < 1 || choice > 5) {
+            	 System.out.println("\nInvalid selection.\n");
+            }
         }
         return choice;
     }
