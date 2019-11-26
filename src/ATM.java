@@ -148,30 +148,42 @@ public class ATM {
         } else if (status == ATM.INSUFFICIENT) {
             System.out.println("\nWithdrawal rejected. Insufficient funds.\n");
         } else if (status == ATM.SUCCESS) {
+        	System.out.println(activeAccount);
+        	bank.update(activeAccount);
+        	bank.save();
             System.out.println("\nWithdrawal accepted.\n");
         }
     }
 
     public void transfer() {
-        System.out.println("Enter account: ");
         long accountNo = 0;
         double amount = -1;
 
         do {
             System.out.println("Enter account: ");
+            accountNo = in.nextLong();
         } while(accountNo < 100000000 || accountNo > 999999999);
 
         do {
             System.out.println("Enter an ammount: ");
+            amount = in.nextDouble();
         }while(amount < 0 || amount > activeAccount.getNumBalance());
+        
+        transferalDeposit(accountNo, amount);
+        transferalWithdrawal(activeAccount.getAccountNo(), amount);
     }
 
-    private void transferalDeposit(long accountDestination,double amount) {
-    	
+    private void transferalDeposit(long accountNo, double amount) {
+    	BankAccount accountDestination = bank.getAccount(accountNo);
+    	accountDestination.deposit(amount);
+    	bank.update(accountDestination);
+    	bank.save();
     }
 
     private void transferalWithdrawal(long usedAccount, double amount) {
-
+    	activeAccount.withdraw(amount);
+    	bank.update(activeAccount);
+    	bank.save();
     }
 
     /*
@@ -233,6 +245,7 @@ public class ATM {
         }
         return choice;
     }
+    
 
     /*
      * Application execution begins here.
