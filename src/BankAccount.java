@@ -1,6 +1,6 @@
 import java.text.NumberFormat;
 
-public class  BankAccount{
+public class BankAccount{
      
 	private static long prevAccountNo = 100000000L;
 	
